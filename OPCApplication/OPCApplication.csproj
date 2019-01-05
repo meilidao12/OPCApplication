@@ -103,6 +103,16 @@
   <ItemGroup>
     <Content Include="bat\Interop.OPCAutomation.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommunicationServers\CommunicationServers.csproj">
+      <Project>{ee21ac1e-0fbb-4eea-8d22-eb6c9775f4d9}</Project>
+      <Name>CommunicationServers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Services.csproj">
+      <Project>{ee86e0b8-f165-4521-bf16-4a0783924f5c}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

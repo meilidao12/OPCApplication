@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Services;
+using CommunicationServers.OPC;
+using OPCAutomation;
 namespace OPCApplication
 {
     /// <summary>
@@ -20,9 +22,33 @@ namespace OPCApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        OPCClientHelper OPCClient = new OPCClientHelper();
+        string ServerIP = "127.0.0.1";
         public MainWindow()
         {
             InitializeComponent();
+            //this.Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<string> names = new List<string>();
+            names = OPCClient.GetOPCServerNames(ServerIP);
+            foreach(var name in names)
+            {
+                Console.WriteLine(name);
+            }
+            OPCServer opcServer = OPCClient.ConnectToServer(names[0], ServerIP);
+            OPCBrowser opcbrowser = OPCClient.RecurBrowse(opcServer);
+            foreach (var item in opcbrowser)
+            {
+                Console.WriteLine(item.ToString());
+            }
+            OPCClient.CreateGroup(opcServer,"tianchen");
+            //OPCClient.GetServerInfo(opcServer);
+            //Console.WriteLine(opcServer.OPCGroups.ToString());
         }
     }
+
+   
 }

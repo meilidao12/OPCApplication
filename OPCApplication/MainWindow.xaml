@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OPCApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" >
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!--****顶部菜单*****-->
+        <TextBox Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="Gray">
+        </TextBox>
+        <!--左侧树形结构-->
+        <TextBox Grid.Row="1" Grid.Column="0" BorderBrush="Gray"></TextBox>
+        <!--中间滑块-->
+        <GridSplitter Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" Width="3"
+                      Background="Gray" ShowsPreview="True"/>
+        <!--中间TabControl-->
+        <TextBox Grid.Row="1" Grid.Column="1" BorderBrush="Gray"></TextBox>
+        <!--右侧TabContent-->
+        <TextBox Grid.Row="1" Grid.Column="2"  BorderBrush="Gray" BorderThickness="3,1,1,1"></TextBox>
     </Grid>
 </Window>
