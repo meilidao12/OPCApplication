@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OPCApplication"
+        xmlns:uc="clr-namespace:OPCApplication.UserControls"
         mc:Ignorable="d"
-        Title="MainWindow" >
-    <Grid>
+        Title="OPC客户端" >
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -20,13 +21,24 @@
         <TextBox Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="Gray">
         </TextBox>
         <!--左侧树形结构-->
-        <TextBox Grid.Row="1" Grid.Column="0" BorderBrush="Gray"></TextBox>
+        <Grid Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" Name="lstAddedTags" SelectionChanged="lstAddedTags_SelectionChanged">
+
+            </ListBox>
+            <Button Grid.Row="1" Name="btnAddressSerial" Click="btnAddressSerial_Click">地址序列化</Button>
+        </Grid>
         <!--中间滑块-->
         <GridSplitter Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" Width="3"
                       Background="Gray" ShowsPreview="True"/>
         <!--中间TabControl-->
-        <TextBox Grid.Row="1" Grid.Column="1" BorderBrush="Gray"></TextBox>
+        <ListBox Name="lstTags" Grid.Row="1" Grid.Column="1" MouseDoubleClick="lstTags_MouseDoubleClick">
+            
+        </ListBox>
         <!--右侧TabContent-->
-        <TextBox Grid.Row="1" Grid.Column="2"  BorderBrush="Gray" BorderThickness="3,1,1,1"></TextBox>
+        <uc:ucInfo Grid.Row="1" Grid.Column="2" x:Name="opcInfo"></uc:ucInfo>
     </Grid>
 </Window>

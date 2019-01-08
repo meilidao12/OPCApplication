@@ -52,7 +52,6 @@ namespace Services.DataBase
 
                     OleDbCommand oleCmd = new OleDbCommand(command, oldCon);
                     oleCmd.CommandTimeout = 0;
-                    
                     return oleCmd.ExecuteNonQuery() > 0; ;
                 }
             }
@@ -85,10 +84,8 @@ namespace Services.DataBase
                 {
                     if (oldCon.State == ConnectionState.Closed)
                         oldCon.Open();
-
                     OleDbCommand oleCmd = new OleDbCommand(command, oldCon);
                     oleCmd.Parameters.AddRange(parameters);
-
                     oleCmd.CommandTimeout = 0;
                     oleCmd.ExecuteNonQuery();
                     return true;
@@ -96,7 +93,7 @@ namespace Services.DataBase
             }
             catch (Exception ex)
             {
-                Error = ex.Message;
+                SimpleLogHelper.Instance.WriteLog(LogType.Error, ex);
                 return false;
             }
         }
@@ -113,7 +110,6 @@ namespace Services.DataBase
                     OleDbCommand oleCmd = new OleDbCommand(command, oldCon);
                     oleCmd.CommandTimeout = 0;
                     oleCmd.CommandType = System.Data.CommandType.Text;
-
                     return oleCmd.ExecuteScalar();
                 }
             }

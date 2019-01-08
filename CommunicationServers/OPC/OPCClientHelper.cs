@@ -6,6 +6,8 @@ using OPCAutomation;
 using Services;
 namespace CommunicationServers.OPC
 {
+    public delegate void DelegateDataChange(List<OPCDataItem> OpcDataItems);
+
     public class OPCClientHelper
     {
         OPCGroups KepGroups;
@@ -13,7 +15,16 @@ namespace CommunicationServers.OPC
         OPCItems KepItems;
         OPCItem KepItem;
         public Array KeyItemServerHandles;
+        List<int> KepItemServerHandles = new List<int>();
+        public List<OPCDataItem> OpcDataItems = new List<OPCDataItem>();
         public List<string> Items;
+        public event DelegateDataChange DataChangeEvent;
+        public OPCClientHelper()
+        {
+            OpcDataItems = new List<OPCDataItem>();
+            KepItemServerHandles.Insert(0, 0); //加一项作为首项
+        }
+
         /// <summary>
         /// 获取OPC服务名称
         /// </summary>
@@ -117,7 +128,6 @@ namespace CommunicationServers.OPC
         {
             try
             {
-                List<int> KepItemServerHandles = new List<int>();
                 opcServer.OPCGroups.DefaultGroupIsActive = true;
                 opcServer.OPCGroups.DefaultGroupDeadband = 0;
                 opcServer.OPCGroups.DefaultGroupUpdateRate = 1000;
@@ -125,13 +135,8 @@ namespace CommunicationServers.OPC
                 KepGroup = KepGroups.Add(opcGroupName);
                 KepGroup.AsyncReadComplete += KepGroup_AsyncReadComplete;
                 KepGroup.DataChange += new DIOPCGroupEvent_DataChangeEventHandler(OpcGroup_DataChange);
-                KepItems = KepGroup.OPCItems;
-                KepItem = KepItems.AddItem("Simulation Examples.Functions.Ramp1", 1);
-                KepItemServerHandles.Add(KepItem.ServerHandle);
                 KepGroup.IsActive = true;
                 KepGroup.IsSubscribed = true;
-                KepItemServerHandles.Insert(0, 0);
-                KeyItemServerHandles = KepItemServerHandles.ToArray();
                 AsyncRead();
                 return KepGroup;
             }
@@ -142,13 +147,29 @@ namespace CommunicationServers.OPC
             }
         }
 
+        public void AddItem(string itemName)
+        {
+            try
+            {
+                KepItems = KepGroup.OPCItems;
+                KepItem = KepItems.AddItem(itemName, KepItemServerHandles.Count);
+                OpcDataItems.Add(new OPCDataItem { ItemName = itemName, ItemHandle = KepItemServerHandles.Count });
+                KepItemServerHandles.Add(KepItem.ServerHandle);
+                KeyItemServerHandles = KepItemServerHandles.ToArray();
+            }
+            catch(Exception ex)
+            {
+                SimpleLogHelper.Instance.WriteLog(LogType.Info, ex);
+            }
+        }
+
         public void AsyncRead()
         {
             Array Errors;
             int cancelID;
             try
             {
-                KepGroup.AsyncRead(2, ref KeyItemServerHandles, out Errors, 2009, out cancelID);
+                KepGroup.AsyncRead(KeyItemServerHandles.Length, ref KeyItemServerHandles, out Errors, 2009, out cancelID);
             }
             catch (Exception exp1)
             {
@@ -167,9 +188,16 @@ namespace CommunicationServers.OPC
         {
             for (int i = 1; i <= NumItems; i++)
             {
-                Console.WriteLine(ClientHandles.GetValue(i));
-                Console.WriteLine(ItemValues.GetValue(i));
+                object handleValue = ClientHandles.GetValue(i);
+                int index = OpcDataItems.FindIndex(m => m.ItemHandle.ToString() == handleValue.ToString());
+                if(index != -1)
+                {
+                    OpcDataItems[index].ItemValue = ItemValues.GetValue(i);
+                    OpcDataItems[index].Quality = Qualities.GetValue(i);
+                    OpcDataItems[index].TimeStamp = TimeStamps.GetValue(i);
+                }
             }
+            DataChangeEvent(OpcDataItems);
         }
     }
 
@@ -182,6 +210,7 @@ namespace CommunicationServers.OPC
     public class OPCDataItem
     {
         public object ItemName { get; set; }
+        public object ItemHandle { get; set; }
         public object ItemValue { get; set; }
         public object Quality { get; set; }
         public object TimeStamp { get; set; }
@@ -206,3 +235,13 @@ namespace CommunicationServers.OPC
         }
     }
 }
+
+/*
+ opc连接步骤：
+   1、
+   2、
+   3、
+   4、
+   5、
+    
+ */
