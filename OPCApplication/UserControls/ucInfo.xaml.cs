@@ -25,6 +25,7 @@ namespace OPCApplication.UserControls
     {
         AccessHelper access = new AccessHelper();
         DispatcherTimer ClockTimer = new DispatcherTimer(); //采集plc数据
+        string opcValue;
         public ucInfo()
         {
             InitializeComponent();
@@ -45,7 +46,7 @@ namespace OPCApplication.UserControls
             if (model != null)
             {
                 this.txbAddress.Text = model.Address;
-                this.txbValue.Text = model.Value;
+                //this.txbValue.Text = model.Value;
             }
         }
         public string Opcname
@@ -53,6 +54,26 @@ namespace OPCApplication.UserControls
             set
             {
                 this.txbTags.Text = value;
+                opcValue = value;
+            }
+            get
+            {
+                return opcValue;
+            }
+        }
+
+        public string OpcValue
+        {
+            set
+            {
+                Dispatcher.BeginInvoke(new Action(() => {
+                    this.txbValue.Text = value;
+                })
+                );
+            }
+            get
+            {
+                return this.txbValue.Text;
             }
         }
 
@@ -65,7 +86,7 @@ namespace OPCApplication.UserControls
                 if (model != null)
                 {
                     this.txbAddress.Text = model.Address;
-                    this.txbValue.Text = model.Value;
+                    //this.txbValue.Text = model.Value;
                     this.txbInfo.Text = model.Info;
                     if(!this.ClockTimer.IsEnabled)
                     {

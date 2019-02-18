@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using OPCAutomation;
 using Services;
+using System.Threading;
+
 namespace CommunicationServers.OPC
 {
     public delegate void DelegateDataChange(List<OPCDataItem> OpcDataItems);
@@ -38,7 +40,6 @@ namespace CommunicationServers.OPC
             foreach (string item in (Array)serverList)
             {
                 lst.Add(item);
-                Console.WriteLine(item);
             }
             return lst;
         }
@@ -128,16 +129,20 @@ namespace CommunicationServers.OPC
         {
             try
             {
-                opcServer.OPCGroups.DefaultGroupIsActive = true;
-                opcServer.OPCGroups.DefaultGroupDeadband = 0;
-                opcServer.OPCGroups.DefaultGroupUpdateRate = 1000;
+                //opcServer.OPCGroups.DefaultGroupIsActive = true;
+                //opcServer.OPCGroups.DefaultGroupDeadband = 0;
+                //opcServer.OPCGroups.DefaultGroupUpdateRate = 1000;
                 KepGroups = opcServer.OPCGroups;
                 KepGroup = KepGroups.Add(opcGroupName);
-                KepGroup.AsyncReadComplete += KepGroup_AsyncReadComplete;
+                KepGroup.IsActive = true;
+                KepGroup.DeadBand = 0;
+                KepGroup.UpdateRate = 1000;
+                KepGroup.IsSubscribed = true;
+                //KepGroup.AsyncReadComplete += KepGroup_AsyncReadComplete;
                 KepGroup.DataChange += new DIOPCGroupEvent_DataChangeEventHandler(OpcGroup_DataChange);
                 KepGroup.IsActive = true;
                 KepGroup.IsSubscribed = true;
-                AsyncRead();
+                //AsyncRead();
                 return KepGroup;
             }
             catch (Exception ex)
@@ -159,7 +164,7 @@ namespace CommunicationServers.OPC
             }
             catch(Exception ex)
             {
-                SimpleLogHelper.Instance.WriteLog(LogType.Info, ex);
+                SimpleLogHelper.Instance.WriteLog(LogType.Error, ex);
             }
         }
 
@@ -197,7 +202,9 @@ namespace CommunicationServers.OPC
                     OpcDataItems[index].TimeStamp = TimeStamps.GetValue(i);
                 }
             }
+            if (DataChangeEvent == null) return;
             DataChangeEvent(OpcDataItems);
+            
         }
     }
 

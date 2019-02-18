@@ -18,8 +18,10 @@
             <ColumnDefinition Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <!--****顶部菜单*****-->
-        <TextBox Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="Gray">
-        </TextBox>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <ComboBox Name="cmbOPCNames" Width="200"></ComboBox>
+            <Button Name="btnConnect" Click="btnConnect_Click" Width="200" Margin="10,0">连接</Button>
+        </StackPanel>
         <!--左侧树形结构-->
         <Grid Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
@@ -27,7 +29,11 @@
                 <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
             <ListBox Grid.Row="0" Name="lstAddedTags" SelectionChanged="lstAddedTags_SelectionChanged">
-
+                <ListBox.ContextMenu>
+                    <ContextMenu Name="lstContextMenu" StaysOpen="True">
+                        <MenuItem Name="Delete" Header="删除" Click="Delete_Click"></MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
             </ListBox>
             <Button Grid.Row="1" Name="btnAddressSerial" Click="btnAddressSerial_Click">地址序列化</Button>
         </Grid>
