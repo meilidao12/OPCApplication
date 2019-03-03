@@ -160,14 +160,19 @@ namespace CommunicationServers.OPC
         /// </summary>
         /// <param name="opcServer">OPC服务器</param>
         /// <returns>返回展开后的节点数据</returns>
-        public OPCBrowser RecurBrowse()
+        public List<string> RecurBrowse()
         {
             OPCBrowser opcBrowser = opcServer.CreateBrowser();
             //展开分支
             opcBrowser.ShowBranches();
             //展开叶子
             opcBrowser.ShowLeafs(true);
-            return opcBrowser;
+            List<string> browserNames = new List<string>();
+            for (int i = 1; i <= opcBrowser.Count; i++)
+            {
+                browserNames.Add(opcBrowser.Item(i));
+            }
+            return browserNames;
         }
 
 

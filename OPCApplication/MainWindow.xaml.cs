@@ -169,11 +169,7 @@ namespace OPCApplication
                 if (opcHelper.CreateNewGroup("group", 1000))
                 {
                     opcHelper.DataChangeEvent += OPCClient_DataChangeEvent;
-                    OPCBrowser opcbrowser = opcHelper.RecurBrowse();
-                    foreach (var item in opcbrowser)
-                    {
-                        this.lstTags.Items.Add(item.ToString());
-                    }
+                    this.lstTags.ItemsSource = opcHelper.RecurBrowse();
                     AddOpcTags();
                 }
             }
@@ -197,14 +193,10 @@ namespace OPCApplication
             try
             {
                 Restart = false;
-                //Task task = new Task(() =>
-                //{
                 foreach (var item in OpcDataItems)
                 {
-                    Console.WriteLine(item.ItemName + ": " + item.ItemValue);
                     if (item.ItemValue != null)
                     {
-                        //SimpleLogHelper.Instance.WriteLog(LogType.Info, item.ItemValue);
                         //右侧显示被选中opc的值
                         if (!string.IsNullOrEmpty(this.opcInfo.Opcname))
                         {
@@ -226,12 +218,8 @@ namespace OPCApplication
                                 models[index].Value = Convert.ToSingle(item.ItemValue).ToString();
                             }
                         }
-                        //string commandtext = string.Format("UPDATE [OPCConfig] SET [Value]={0} WHERE Name='{1}'", Convert.ToSingle(item.ItemValue).ToString(), item.ItemName);
-                        //access.Execute(commandtext);
                     }
                 }
-                //});
-                //task.Start();
             }
             catch (Exception ex)
             {
